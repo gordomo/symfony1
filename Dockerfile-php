@@ -16,7 +16,3 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN curl -sS https://getcomposer.org/installer | php && mv composer.phar /usr/local/bin/composer
 COPY symfony/ /var/www/symfony
 WORKDIR /var/www/symfony/
-
-ENV http_proxy "34.233.0.96:80"
-ENV https_proxy "34.233.0.96:80"
-ENV no_proxy "34.233.0.96:80"
