@@ -16,6 +16,9 @@ class CajaType extends AbstractType
             ->add('egreso')
             ->add('llevaTicket')
             ->add('fecha')
+            ->add('descrip', null, [
+                'label' => 'Descripción',
+            ])
         ;
     }
 

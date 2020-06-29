@@ -5,10 +5,12 @@ namespace App\Controller;
 use App\Entity\Caja;
 use App\Form\CajaType;
 use App\Repository\CajaRepository;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+
 
 /**
  * @Route("/caja")
@@ -16,12 +18,57 @@ use Symfony\Component\Routing\Annotation\Route;
 class CajaController extends AbstractController
 {
     /**
-     * @Route("/", name="caja_index", methods={"GET"})
+     * @Route("/", name="caja_index", methods={"GET","POST"})
      */
-    public function index(CajaRepository $cajaRepository): Response
+    public function index(CajaRepository $cajaRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        $caja = new Caja();
+        $caja->setIngreso(0);
+        $caja->setEgreso(0);
+        $caja->setFecha(new \DateTime('now'));
+        $caja->setLlevaTicket(true);
+        $form = $this->createForm(CajaType::class, $caja);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($caja);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('caja_index');
+        }
+
+        $buscar = $request->query->get('buscar') ?? '';
+        $desde = $request->query->get('desde') ?? '';
+        $hasta = $request->query->get('hasta') ?? '';
+
+        if($desde != '') {
+            $desde = new \DateTime($desde);
+            if ($hasta == '') {
+                $hasta = new \DateTime();
+            } else {
+                $hasta = new \DateTime($hasta);
+            }
+        }
+
+        $cajasQuery = $cajaRepository->findByCustom($buscar, $desde, $hasta);
+        
+        $pagination = $paginator->paginate(
+            $cajasQuery, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
+        $desdeDP = ($desde != '') ? $desde->format('d/m/Y') : '';
+        $hastaDP = ($hasta != '') ? $hasta->format('d/m/Y') : '';
+
         return $this->render('caja/index.html.twig', [
-            'cajas' => $cajaRepository->findAll(),
+            'pagination' => $pagination,
+            'caja' => $caja,
+            'form' => $form->createView(),
+            'buscar' => $buscar,
+            'desde' => $desdeDP,
+            'hasta' => $hastaDP,
         ]);
     }
 

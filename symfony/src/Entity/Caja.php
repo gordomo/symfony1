@@ -37,6 +37,11 @@ class Caja
      */
     private $fecha;
 
+    /**
+     * @ORM\Column(type="string", length=1024, nullable=true)
+     */
+    private $descrip;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -47,8 +52,9 @@ class Caja
         return $this->ingreso;
     }
 
-    public function setIngreso(float $ingreso): self
+    public function setIngreso(?float $ingreso): self
     {
+        if(empty($ingreso)) $ingreso = 0;
         $this->ingreso = $ingreso;
 
         return $this;
@@ -85,7 +91,19 @@ class Caja
 
     public function setFecha(\DateTimeInterface $fecha): self
     {
-        $this->fecha = $fecha;
+        $this->fecha = new \DateTime('now');
+
+        return $this;
+    }
+
+    public function getDescrip(): ?string
+    {
+        return $this->descrip;
+    }
+
+    public function setDescrip(?string $descrip): self
+    {
+        $this->descrip = $descrip;
 
         return $this;
     }
