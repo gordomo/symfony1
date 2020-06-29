@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New Caja{% endblock %}
+
+{% block body %}
+    <h1>Create new Caja</h1>
+
+    {{ include('caja/_form.html.twig') }}
+
+    <a href="{{ path('caja_index') }}">back to list</a>
+{% endblock %}
