@@ -52,7 +52,7 @@ class CajaController extends AbstractController
         }
 
         $cajasQuery = $cajaRepository->findByCustom($buscar, $desde, $hasta);
-        
+
         $pagination = $paginator->paginate(
             $cajasQuery, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
