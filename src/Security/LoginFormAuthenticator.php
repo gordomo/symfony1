@@ -7,6 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Core\Exception\CustomUserMessageAuthenticationException;
@@ -92,12 +93,15 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator implements P
 
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, $providerKey)
     {
-        if ($targetPath = $this->getTargetPath($request->getSession(), $providerKey)) {
-            return new RedirectResponse($targetPath);
+        $routes = $this->urlGenerator->generate('caja_index');
+
+        foreach ($token->getUser()->getRoles() as $userRoles) {
+            if($userRoles == 'ROLE_ADMIN') {
+                $targetPath = $this->urlGenerator->generate('admin');
+            }
         }
 
-        // For example : return new RedirectResponse($this->urlGenerator->generate('some_route'));
-        throw new \Exception('TODO: provide a valid redirect inside '.__FILE__);
+        return new RedirectResponse($targetPath);
     }
 
     protected function getLoginUrl()

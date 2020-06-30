@@ -27,7 +27,11 @@ class DashboardController extends AbstractDashboardController
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linkToCrud('Usuarios', 'fa fa-user', User::class);
-        yield MenuItem::linkToLogout('Logout', 'fa fa-exit');
+        return [
+            MenuItem::linkToCrud('Usuarios', 'fa fa-user', User::class),
+            MenuItem::section(),
+            MenuItem::linkToLogout('Logout', 'fa fa-exit'),
+        ];
+
     }
 }
