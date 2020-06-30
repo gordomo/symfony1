@@ -5,8 +5,14 @@ namespace App\Controller;
 use App\Entity\Caja;
 use App\Form\CajaType;
 use App\Repository\CajaRepository;
+
+
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\DateType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +33,15 @@ class CajaController extends AbstractController
         $caja->setEgreso(0);
         $caja->setFecha(new \DateTime('now'));
         $caja->setLlevaTicket(true);
-        $form = $this->createForm(CajaType::class, $caja);
+        //$form = $this->createForm(CajaType::class, $caja);
+        $form = $this->createFormBuilder($caja)
+            ->add('ingreso', NumberType::class)
+            ->add('llevaTicket', CheckboxType::class)
+            ->add('fecha', DateType::class)
+            ->add('save', SubmitType::class, ['label' => 'Guardar'])
+            ->getForm();
+
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -53,10 +67,13 @@ class CajaController extends AbstractController
 
         $cajasQuery = $cajaRepository->findByCustom($buscar, $desde, $hasta);
 
+        $ingresos = $cajaRepository->getIngresos($buscar, $desde, $hasta);
+        $total = $ingresos[0][1];
+
         $pagination = $paginator->paginate(
             $cajasQuery, /* query NOT result */
             $request->query->getInt('page', 1), /*page number*/
-            10 /*limit per page*/
+            20 /*limit per page*/
         );
 
         $desdeDP = ($desde != '') ? $desde->format('d/m/Y') : '';
@@ -69,6 +86,7 @@ class CajaController extends AbstractController
             'buscar' => $buscar,
             'desde' => $desdeDP,
             'hasta' => $hastaDP,
+            'ingresos' => $total,
         ]);
     }
 
@@ -98,17 +116,17 @@ class CajaController extends AbstractController
     /**
      * @Route("/{id}", name="caja_show", methods={"GET"})
      */
-    public function show(Caja $caja): Response
+    /*public function show(Caja $caja): Response
     {
         return $this->render('caja/show.html.twig', [
             'caja' => $caja,
         ]);
-    }
+    }*/
 
     /**
      * @Route("/{id}/edit", name="caja_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Caja $caja): Response
+    /*public function edit(Request $request, Caja $caja): Response
     {
         $form = $this->createForm(CajaType::class, $caja);
         $form->handleRequest($request);
@@ -123,7 +141,7 @@ class CajaController extends AbstractController
             'caja' => $caja,
             'form' => $form->createView(),
         ]);
-    }
+    }*/
 
     /**
      * @Route("/{id}", name="caja_delete", methods={"DELETE"})

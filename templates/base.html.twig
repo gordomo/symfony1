@@ -17,7 +17,10 @@
                 </div>
                 <ul class="nav navbar-nav">
                     <li class="active"><a href="#">Link <span class="sr-only">(current)</span></a></li>
-                    <li><a href="#">Link</a></li>
+                    {% if is_granted('IS_AUTHENTICATED_REMEMBERED') %}
+                        <li><a href="{{ path('app_logout') }}">LogOut</a></li>
+                    {% endif %}
+
                 </ul>
             </div>
         </nav>

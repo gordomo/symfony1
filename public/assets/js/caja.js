@@ -21,6 +21,11 @@ $('#buscar').click(function () {
     }
 });
 
+$('#limpiar').click(function () {
+    var url = $(this).data('url');
+    location.href = url;
+});
+
 $('#caja_ingreso, #caja_egreso').on('focus', function(){
     $(this).val('')
 })

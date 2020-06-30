@@ -23,16 +23,23 @@ class CajaRepository extends ServiceEntityRepository
     //  * @return Caja[] Returns an array of Caja objects
     //  */
 
-    public function findByExampleField($value)
+    public function getIngresos($desc = '', $desde = '', $hasta = '')
     {
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
-            ->orderBy('c.id', 'ASC')
-            ->setMaxResults(10)
-            ->getQuery()
-            ->getResult()
-        ;
+        $query = $this->createQueryBuilder('c');
+        if($desc != '') {
+            $query = $query->andWhere('c.descrip like  :descrip')->setParameter('descrip','%'. $desc .'%');
+        }
+        if($desde != '') {
+
+            $from = new \DateTime($desde->format("Y-m-d")." 00:00:00");
+            $to   = new \DateTime($hasta->format("Y-m-d")." 23:59:59");
+            $query = $query->andWhere('c.fecha BETWEEN  :from AND :to')
+                ->setParameter('from', $from )
+                ->setParameter('to', $to);
+        }
+        $query = $query->select('SUM(c.ingreso)');
+        $query = $query->getQuery();
+        return $query->getResult();
     }
     public function findByDesc($value)
     {
@@ -61,7 +68,7 @@ class CajaRepository extends ServiceEntityRepository
 
 
         return $query
-            ->orderBy('c.id', 'ASC')
+            ->orderBy('c.id', 'DESC')
             ->getQuery();
     }
 
