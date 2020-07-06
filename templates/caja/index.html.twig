@@ -1,0 +1,98 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Caja index{% endblock %}
+
+{% block body %}
+    <h1>Caja</h1>
+
+    {{ include('caja/_form.html.twig') }}
+    <br><br><br><br><br>
+    <table>
+        <tr>
+            <td>
+                <div class="input-group input-daterange">
+                    <div class="input-group-addon" >Desde</div>
+                    <input type="text" class="form-control" id="desde" value="{{ desde }}">
+                    <div class="input-group-addon" >Hasta</div>
+                    <input type="text" class="form-control" id="hasta" value="{{ hasta }}">
+                </div>
+            </td>
+            <td style="padding-left: 5px"><input type="text" name="desc" id="desc" value="{{ buscar }}" placeholder="buscar por descrición" class="form-control"></td>
+            <td>
+                <button class="btn btn-sm btn-primary form-control" id="buscar" data-url="{{ path('caja_index')}}">buscar</button>
+            </td>
+            <td style="padding-left: 15px">
+                <button class="btn btn-sm btn-info form-control" id="limpiar" data-url="{{ path('caja_index')}}">ver todo</button>
+            </td>
+            {% if is_granted('ROLE_ADMIN') %}
+            <td style="padding-left: 15px">
+                <span id="calcular">Ingresos con/sin ticket: ${{ ingresos }}/${{ ingresosSinTicket }}</span><br>
+                <span>Total: ${{ ingresos + ingresosSinTicket }}</span>
+            </td>
+            {% endif %}
+        </tr>
+    </table>
+    <table class="table table-striped">
+        <thead>
+        <tr class="controles">
+            {# sorting of properties based on query components #}
+            <th {% if pagination.isSorted('c.id') %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Id', 'c.id') }}
+            </th>
+            {#<th {% if pagination.isSorted(['c.descrip']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Descripción', 'c.descrip') }}
+            </th>#}
+            <th {% if pagination.isSorted(['c.ingreso']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Ingreso', 'c.ingreso') }}
+            </th>
+            {#<th {% if pagination.isSorted(['c.egreso']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Egreso', 'c.egreso') }}
+            </th>#}
+            <th {% if pagination.isSorted(['c.llevaTicket']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'lleva Ticket', 'c.llevaTicket') }}
+            </th>
+            <th {% if pagination.isSorted(['c.date']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Fecha', ['c.fecha']) }}
+            </th>
+            {#<th>Acciones</th>#}
+        </tr>
+        </thead>
+        <tbody>
+        {# table body #}
+        {% for items in pagination %}
+            <tr {% if loop.index is odd %}class="color"{% endif %}>
+                <td>{{ loop.index }}</td>
+                {#<td>{{ items.descrip }}</td>#}
+                <td>{{ items.ingreso }}</td>
+                {#<td>{{ items.egreso }}</td>#}
+                <td>
+                    {% if items.llevaTicket %}
+                        si
+                    {% else %}
+                        no
+                    {% endif %}
+                </td>
+                <td>{{ items.fecha | date('Y-m-d H:i:s') }}</td>
+                {% if is_granted('ROLE_ADMIN') %}
+                <td>
+                    <a href="{{ path('caja_show', {'id': items.id}) }}">show</a>
+                    <a href="{{ path('caja_edit', {'id': items.id}) }}">edit</a>
+                </td>
+                {% endif %}
+            </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+
+        </tfoot>
+    </table>
+    {# display navigation #}
+    <div class="navigation">
+        {{ knp_pagination_render(pagination) }}
+    </div>
+{% endblock %}
+{% block javascripts %}
+    {{ parent() }}
+    <script src="{{ asset('assets/js/caja.js') }}"></script>
+
+{% endblock %}
