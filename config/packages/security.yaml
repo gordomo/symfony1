@@ -41,5 +41,5 @@ security:
         - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/caja/\d+, roles: ROLE_ADMIN }
         - { path: ^/caja/\d+/edit, roles: ROLE_ADMIN }
-        - { path: ^/caja, roles: ROLE_CAJA }
+        - { path: ^/caja, roles: [ROLE_CAJA, ROLE_ADMIN] }
         # - { path: ^/profile, roles: ROLE_USER }
