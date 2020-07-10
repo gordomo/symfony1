@@ -52,6 +52,8 @@ class CajaController extends AbstractController
             return $this->redirectToRoute('caja_index');
         }
 
+        $user = $this->getUser();
+        //dd($user->isAdmin());
         $buscar = $request->query->get('buscar') ?? '';
         $desde = $request->query->get('desde') ?? date('Y-m-d 00:00:00');;
         $hasta = $request->query->get('hasta') ?? date('Y-m-d 23:59:59');;

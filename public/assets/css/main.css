@@ -5,6 +5,9 @@ body { padding-top: 70px; }
     color: #fff;
     font-size: 22px;
 }
+.form_caja input {
+    width: 30%;
+}
 /*
 table {
     width: 716px; !* 140px * 5 column + 16px scrollbar width *!
