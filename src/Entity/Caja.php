@@ -91,7 +91,7 @@ class Caja
 
     public function setFecha(\DateTimeInterface $fecha): self
     {
-        $this->fecha = new \DateTime('now');
+        $this->fecha = $fecha;
 
         return $this;
     }

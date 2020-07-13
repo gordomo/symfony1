@@ -39,3 +39,13 @@ $('#caja_ingreso, #caja_egreso').on('focusout', function(){
 $('.input-daterange input').each(function() {
     $(this).datepicker('update');
 });
+
+$('#desde').on('change', function () {
+    $(this).datepicker('hide');
+    $('#hasta').datepicker('setStartDate', $(this).val());
+    $('#hasta').datepicker('update', $(this).val());
+})
+
+$('#hasta').on('change', function () {
+    $(this).datepicker('hide');
+})

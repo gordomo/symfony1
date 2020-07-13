@@ -25,10 +25,12 @@ class CajaController extends AbstractController
 {
     /**
      * @Route("/", name="caja_index", methods={"GET","POST"})
+     * @throws \Exception
      */
     public function index(CajaRepository $cajaRepository, Request $request, PaginatorInterface $paginator): Response
     {
         $caja = new Caja();
+        $user = $this->getUser();
         $caja->setIngreso(0);
         $caja->setEgreso(0);
         $caja->setFecha(new \DateTime('now'));
@@ -36,8 +38,8 @@ class CajaController extends AbstractController
         //$form = $this->createForm(CajaType::class, $caja);
         $form = $this->createFormBuilder($caja)
             ->add('ingreso', NumberType::class)
-            ->add('llevaTicket', CheckboxType::class)->setRequired(false)
-            ->add('fecha', DateType::class)
+            ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
+            ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
             ->getForm();
 
@@ -46,14 +48,17 @@ class CajaController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+
+            if (!$user->isAdmin()) {
+                $caja->setFecha(new \DateTime('now'));
+            }
             $entityManager->persist($caja);
             $entityManager->flush();
 
             return $this->redirectToRoute('caja_index');
         }
 
-        $user = $this->getUser();
-        //dd($user->isAdmin());
+
         $buscar = $request->query->get('buscar') ?? '';
         $desde = $request->query->get('desde') ?? date('Y-m-d 00:00:00');;
         $hasta = $request->query->get('hasta') ?? date('Y-m-d 23:59:59');;
