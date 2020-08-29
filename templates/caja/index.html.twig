@@ -45,9 +45,9 @@
             <th {% if pagination.isSorted('c.id') %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Id', 'c.id') }}
             </th>
-            <th {% if pagination.isSorted(['c.descrip']) %} class="sorted"{% endif %}>
+            {# <th {% if pagination.isSorted(['c.descrip']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Descripción', 'c.descrip') }}
-            </th>
+            </th> #}
             <th {% if pagination.isSorted(['c.ingreso']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Ingreso', 'c.ingreso') }}
             </th>
@@ -70,7 +70,7 @@
         {% for items in pagination %}
             <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ loop.index }}</td>
-                <td>{{ items.descrip }}</td>
+                {#<td>{{ items.descrip }}</td>#}
                 <td>{{ items.ingreso }}</td>
                 <td>{{ items.egreso }}</td>
                 <td>

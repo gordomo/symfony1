@@ -40,7 +40,7 @@ class CajaController extends AbstractController
         //$form = $this->createForm(CajaType::class, $caja);
         $form = $this->createFormBuilder($caja)
             ->add('ingreso', NumberType::class, ['required' => false])
-            ->add('descrip', TextType::class, ['required' => false])
+            //->add('descrip', TextType::class, ['required' => false])
             ->add('egreso', NumberType::class, ['required' => false])
             ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
             ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
@@ -158,9 +158,10 @@ class CajaController extends AbstractController
 
         $form = $this->createFormBuilder($caja)
             ->add('ingreso', NumberType::class, ['required' => false])
+            //->add('descrip', TextType::class, ['required' => false])
             ->add('egreso', NumberType::class, ['required' => false])
             ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
-            ->add('fecha', DateType::class, ['widget' => 'single_text'])
+            ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
             ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
             ->getForm();

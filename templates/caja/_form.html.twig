@@ -15,12 +15,12 @@
                     {{ form_widget(form.egreso) }}
                 </div>
             </div>
-            <div class="form-row">
+            {#<div class="form-row">
                 <div class="col-sm">
                     {{ form_label(form.descrip, 'Descripción') }}
                     {{ form_widget(form.descrip) }}
                 </div>
-            </div>
+            </div>#}
             <div class="form-row">
                 <div class="col-sm">
                     {{ form_label(form.llevaTicket, 'Lleva Ticket') }}
@@ -46,7 +46,6 @@
                 {{ form_widget(form.save, {'attr': {'class': 'btn btn-default'}}) }}
             </div>
         </div>
-        <div class="col-sm"></div>
         <div class="col-sm"></div>
     </div>
     <br>
