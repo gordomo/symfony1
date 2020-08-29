@@ -37,7 +37,9 @@ $('#caja_ingreso, #caja_egreso').on('focusout', function(){
 });
 
 $('.input-daterange input').each(function() {
-    $(this).datepicker('update');
+    $(this).datepicker({
+        format: 'dd/mm/yyyy'
+    });
 });
 
 $('#desde').on('change', function () {
@@ -49,3 +51,13 @@ $('#desde').on('change', function () {
 $('#hasta').on('change', function () {
     $(this).datepicker('hide');
 })
+
+function updateClock() {
+    var now = new Date();
+    var time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
+
+    $('#form_hora').val(time);
+    // call this function again in 1000ms
+    setTimeout(updateClock, 1000);
+}
+updateClock();

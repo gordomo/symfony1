@@ -1,3 +1,54 @@
 {{ form_start(form) }}
-    {{ form_widget(form, {'attr': {'class': 'form_caja'}}) }}
+<div class="form_caja">
+    <br>
+    <div class="form-row">
+        <div class="col-sm">
+            <div class="form-row">
+                <div class="col-sm">
+                    {{ form_label(form.ingreso, 'Ingreso') }}
+                    {{ form_widget(form.ingreso) }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm">
+                    {{ form_label(form.egreso, 'Egreso') }}
+                    {{ form_widget(form.egreso) }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm">
+                    {{ form_label(form.descrip, 'Descripción') }}
+                    {{ form_widget(form.descrip) }}
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-sm">
+                    {{ form_label(form.llevaTicket, 'Lleva Ticket') }}
+                    {{ form_widget(form.llevaTicket) }}
+                </div>
+            </div>
+
+            <br>
+            <div class="form-row">
+                <div class="col-sm">
+                    {{ form_label(form.fecha, 'Fecha') }}
+                    {{ form_widget(form.fecha) }}
+                </div>
+                <br>
+                <div class="col-sm">
+                    {{ form_label(form.hora, 'Hora') }}
+                    {{ form_widget(form.hora) }}
+                </div>
+            </div>
+            <br>
+
+            <div class="form-group">
+                {{ form_widget(form.save, {'attr': {'class': 'btn btn-default'}}) }}
+            </div>
+        </div>
+        <div class="col-sm"></div>
+        <div class="col-sm"></div>
+    </div>
+    <br>
+</div>
 {{ form_end(form) }}

@@ -1,12 +1,21 @@
 body { padding-top: 70px; }
 .form_caja .btn-default.btn {
-    width: 30%;
+    width: 100%;
     background-color: #3379b6;
     color: #fff;
     font-size: 22px;
 }
-.form_caja input {
-    width: 30%;
+.form-row {
+    margin-bottom: 10px;
+}
+
+.loginform {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 35px;
+    text-align: center;
+    box-shadow: 4px 4px 8px grey;
+    margin-top: 55px;
 }
 /*
 table {

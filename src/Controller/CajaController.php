@@ -10,6 +10,7 @@ use App\Repository\CajaRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -29,17 +30,21 @@ class CajaController extends AbstractController
      */
     public function index(CajaRepository $cajaRepository, Request $request, PaginatorInterface $paginator): Response
     {
+        date_default_timezone_set("america/buenos_aires");
         $caja = new Caja();
         $user = $this->getUser();
-        $caja->setIngreso(0);
-        $caja->setEgreso(0);
+        //$caja->setIngreso(0);
+        //$caja->setEgreso(0);
         $caja->setFecha(new \DateTime('now'));
         $caja->setLlevaTicket(true);
         //$form = $this->createForm(CajaType::class, $caja);
         $form = $this->createFormBuilder($caja)
-            ->add('ingreso', NumberType::class)
+            ->add('ingreso', NumberType::class, ['required' => false])
+            ->add('descrip', TextType::class, ['required' => false])
+            ->add('egreso', NumberType::class, ['required' => false])
             ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
             ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
+            ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
             ->getForm();
 
@@ -51,6 +56,13 @@ class CajaController extends AbstractController
 
             if (!$user->isAdmin()) {
                 $caja->setFecha(new \DateTime('now'));
+            } else {
+                $fechaIngresada = $form['fecha']->getData();
+                $horaIngresada = $form['hora']->getData();
+                $partes = explode(":", $horaIngresada);
+
+                $fechaIngresada->setTime($partes[0], $partes[1], $partes[2]);
+                $caja->setFecha($fechaIngresada);
             }
             $entityManager->persist($caja);
             $entityManager->flush();
@@ -60,8 +72,8 @@ class CajaController extends AbstractController
 
 
         $buscar = $request->query->get('buscar') ?? '';
-        $desde = $request->query->get('desde') ?? date('Y-m-d 00:00:00');;
-        $hasta = $request->query->get('hasta') ?? date('Y-m-d 23:59:59');;
+        $desde = $request->query->get('desde') ?? date('d-m-Y 00:00:00');;
+        $hasta = $request->query->get('hasta') ?? date('d-m-Y 23:59:59');;
 
         if($desde != '') {
             $desde = new \DateTime($desde);
@@ -139,12 +151,34 @@ class CajaController extends AbstractController
      */
     public function edit(Request $request, Caja $caja): Response
     {
-        $form = $this->createForm(CajaType::class, $caja);
-        $form->add('save', SubmitType::class, ['label' => 'Guardar']);
+        $user = $this->getUser();
+        if (!$user->isAdmin()) {
+            return $this->redirectToRoute('caja_index');
+        }
+
+        $form = $this->createFormBuilder($caja)
+            ->add('ingreso', NumberType::class, ['required' => false])
+            ->add('egreso', NumberType::class, ['required' => false])
+            ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
+            ->add('fecha', DateType::class, ['widget' => 'single_text'])
+            ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
+            ->add('save', SubmitType::class, ['label' => 'Guardar'])
+            ->getForm();
+
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $fechaIngresada = $form['fecha']->getData();
+            $horaIngresada = $form['hora']->getData();
+            $partes = explode(":", $horaIngresada);
+
+            $fechaIngresada->setTime($partes[0], $partes[1], $partes[2]);
+            $caja->setFecha($fechaIngresada);
+
+            $entityManager->persist($caja);
+            $entityManager->flush();
 
             return $this->redirectToRoute('caja_index');
         }

@@ -6,34 +6,38 @@
     <h1>Caja</h1>
 
     {{ include('caja/_form.html.twig') }}
-    <br><br><br><br><br>
-    <table>
-        <tr>
-            <td>
+    <br>
+                <div class="input-group mb-3 input-daterang">
                 {% if is_granted('ROLE_ADMIN') %}
-                <div class="input-group input-daterange">
-                    <div class="input-group-addon" >Desde</div>
-                    <input type="text" class="form-control" id="desde" value="{{ desde }}">
-                    <div class="input-group-addon" >Hasta</div>
-                    <input type="text" class="form-control" id="hasta" value="{{ hasta }}">
-                </div>
+
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon1">Desde</span>
+                        </div>
+                        <input type="text" class="form-control" id="desde" value="{{ desde }}" aria-label="desde" aria-describedby="basic-addon1">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text" id="basic-addon2">Hasta</span>
+                        </div>
+                        <input type="text" class="form-control" id="hasta" value="{{ hasta }}" aria-label="hasta" aria-describedby="basic-addon2">
+
+
                 {% endif %}
-            </td>
-            <td style="padding-left: 5px"><input type="text" name="desc" id="desc" value="{{ buscar }}" placeholder="buscar por descrición" class="form-control"></td>
-            <td>
-                <button class="btn btn-sm btn-primary form-control" id="buscar" data-url="{{ path('caja_index')}}">buscar</button>
-            </td>
-            <td style="padding-left: 15px">
-                <button class="btn btn-sm btn-info form-control" id="limpiar" data-url="{{ path('caja_index')}}">ver todo</button>
-            </td>
+
+                    <input type="text" name="desc" id="desc" value="{{ buscar }}" placeholder="buscar por descrición" class="form-control">
+
+                    <button class="btn btn-primary form-control" id="buscar" data-url="{{ path('caja_index')}}">buscar</button>
+
+                    <button class="btn btn-info form-control" id="limpiar" data-url="{{ path('caja_index')}}">ver todo</button>
+                </div>
+
             {% if is_granted('ROLE_ADMIN') %}
-            <td style="padding-left: 15px">
-                <span id="calcular">Ingresos con/sin ticket: ${{ ingresos }}/${{ ingresosSinTicket }}</span><br>
-                <span>Total: ${{ ingresos + ingresosSinTicket }}</span>
-            </td>
+
+                <div class="input-group mb-3 ">
+                    <span id="calcular">Ingresos con/sin ticket: ${{ ingresos }}/${{ ingresosSinTicket }}</span><br>
+                    <span>Total: ${{ ingresos + ingresosSinTicket }}</span>
+                </div>
+
             {% endif %}
-        </tr>
-    </table>
+
     <table class="table table-striped">
         <thead>
         <tr class="controles">
@@ -41,22 +45,24 @@
             <th {% if pagination.isSorted('c.id') %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Id', 'c.id') }}
             </th>
-            {#<th {% if pagination.isSorted(['c.descrip']) %} class="sorted"{% endif %}>
+            <th {% if pagination.isSorted(['c.descrip']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Descripción', 'c.descrip') }}
-            </th>#}
+            </th>
             <th {% if pagination.isSorted(['c.ingreso']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Ingreso', 'c.ingreso') }}
             </th>
-            {#<th {% if pagination.isSorted(['c.egreso']) %} class="sorted"{% endif %}>
+            <th {% if pagination.isSorted(['c.egreso']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Egreso', 'c.egreso') }}
-            </th>#}
+            </th>
             <th {% if pagination.isSorted(['c.llevaTicket']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'lleva Ticket', 'c.llevaTicket') }}
             </th>
             <th {% if pagination.isSorted(['c.date']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Fecha', ['c.fecha']) }}
             </th>
-            {#<th>Acciones</th>#}
+            {% if is_granted('ROLE_ADMIN') %}
+                <th>Acciones</th>
+            {% endif %}
         </tr>
         </thead>
         <tbody>
@@ -64,9 +70,9 @@
         {% for items in pagination %}
             <tr {% if loop.index is odd %}class="color"{% endif %}>
                 <td>{{ loop.index }}</td>
-                {#<td>{{ items.descrip }}</td>#}
+                <td>{{ items.descrip }}</td>
                 <td>{{ items.ingreso }}</td>
-                {#<td>{{ items.egreso }}</td>#}
+                <td>{{ items.egreso }}</td>
                 <td>
                     {% if items.llevaTicket %}
                         si
