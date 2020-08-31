@@ -156,6 +156,10 @@ class CajaController extends AbstractController
             return $this->redirectToRoute('caja_index');
         }
 
+        $fecha = $caja->getFecha();
+        $hora = date("H:i:s",$fecha->getTimestamp());
+
+
         $form = $this->createFormBuilder($caja)
             ->add('ingreso', NumberType::class, ['required' => false])
             //->add('descrip', TextType::class, ['required' => false])
@@ -165,6 +169,8 @@ class CajaController extends AbstractController
             ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
             ->getForm();
+
+        $form->get('hora')->setData($hora);
 
         $form->handleRequest($request);
 
