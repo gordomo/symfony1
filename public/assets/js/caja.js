@@ -54,6 +54,14 @@ $('#hasta').on('change', function () {
     $(this).datepicker('hide');
 })
 
+
+var form = document.querySelector('form');
+if(typeof (form) != "undefined") {
+    form.addEventListener('submit', function() {
+        $('form button:submit').attr('disabled', 'disabled');
+    }, false);
+}
+
 function updateClock() {
     var now = new Date();
     var time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0') + ':' + String(now.getSeconds()).padStart(2, '0');
