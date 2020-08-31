@@ -44,8 +44,10 @@ $('.input-daterange input').each(function() {
 
 $('#desde').on('change', function () {
     $(this).datepicker('hide');
-    $('#hasta').datepicker('setStartDate', $(this).val());
-    $('#hasta').datepicker('update', $(this).val());
+    if ( $('#desde').val() > $('#hasta').val() ) {
+        $('#hasta').datepicker('setStartDate', $(this).val());
+        $('#hasta').datepicker('update', $(this).val());
+    }
 })
 
 $('#hasta').on('change', function () {
