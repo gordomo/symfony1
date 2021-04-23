@@ -2,3 +2,6 @@
 #  entities:
 #    User:
 #      class: App\Entity\User
+easy_admin:
+  entities:
+    - App\Entity\Command
