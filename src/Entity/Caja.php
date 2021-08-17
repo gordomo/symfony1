@@ -33,6 +33,11 @@ class Caja
     private $llevaTicket;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $efectivo;
+
+    /**
      * @ORM\Column(type="datetime")
      */
     private $fecha;
@@ -106,5 +111,21 @@ class Caja
         $this->descrip = $descrip;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getEfectivo()
+    {
+        return $this->efectivo;
+    }
+
+    /**
+     * @param mixed $efectivo
+     */
+    public function setEfectivo($efectivo): void
+    {
+        $this->efectivo = $efectivo;
     }
 }

@@ -37,12 +37,14 @@ class CajaController extends AbstractController
         //$caja->setEgreso(0);
         $caja->setFecha(new \DateTime('now'));
         $caja->setLlevaTicket(true);
+        $caja->setEfectivo(true);
         //$form = $this->createForm(CajaType::class, $caja);
         $form = $this->createFormBuilder($caja)
             ->add('ingreso', NumberType::class, ['required' => false])
             //->add('descrip', TextType::class, ['required' => false])
             ->add('egreso', NumberType::class, ['required' => false])
             ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
+            ->add('efectivo', CheckboxType::class, ['label' => 'Pago en Efectivo'])->setRequired(false)
             ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
             ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
@@ -89,8 +91,14 @@ class CajaController extends AbstractController
         $ingresosConTicket = $cajaRepository->getIngresos($buscar, $desde, $hasta, true);
         $ingresosSinTicket = $cajaRepository->getIngresos($buscar, $desde, $hasta, false);
 
+        $ingresosEfectivo = $cajaRepository->getIngresosEfectivoTarjeta($buscar, $desde, $hasta, true);
+        $ingresosTarjetas = $cajaRepository->getIngresosEfectivoTarjeta($buscar, $desde, $hasta, false);
+
         $totalConTicket = $ingresosConTicket[0][1] ?? 0;
         $totalSinTicket = $ingresosSinTicket[0][1] ?? 0;
+
+        $totalEfectivo = $ingresosEfectivo[0][1] ?? 0;
+        $totalTarjeta = $ingresosTarjetas[0][1] ?? 0;
 
         $pagination = $paginator->paginate(
             $cajasQuery, /* query NOT result */
@@ -110,6 +118,8 @@ class CajaController extends AbstractController
             'hasta' => $hastaDP,
             'ingresos' => $totalConTicket,
             'ingresosSinTicket' => $totalSinTicket,
+            'totalEfectivo' => $totalEfectivo,
+            'totalTarjeta' => $totalTarjeta,
         ]);
     }
 

@@ -22,7 +22,7 @@
 
                 {% endif %}
 
-                    <input type="text" name="desc" id="desc" value="{{ buscar }}" placeholder="buscar por descrición" class="form-control">
+                    {#<input type="text" name="desc" id="desc" value="{{ buscar }}" placeholder="buscar por descrición" class="form-control">#}
 
                     <button class="btn btn-primary form-control" id="buscar" data-url="{{ path('caja_index')}}">buscar</button>
 
@@ -31,9 +31,17 @@
 
             {% if is_granted('ROLE_ADMIN') %}
 
-                <div class="input-group mb-3 ">
-                    <span id="calcular">Ingresos con/sin ticket: ${{ ingresos }}/${{ ingresosSinTicket }}</span><br>
-                    <span>Total: ${{ ingresos + ingresosSinTicket }}</span>
+                <div class="input-group mb-3 row">
+                    <div class="col-12">
+                        <span id="calcular">Ingresos con/sin ticket: ${{ ingresos }}/${{ ingresosSinTicket }}</span>
+                    </div>
+                    <div class="col-12">
+                        <span id="calcular">Ingresos Efectivo/Tarjeta: ${{ totalEfectivo }}/${{ totalTarjeta }}</span>
+                    </div>
+                    <div class="col-12">
+                        <span>Total: ${{ ingresos + ingresosSinTicket }}</span>
+                    </div>
+
                 </div>
 
             {% endif %}
@@ -57,6 +65,9 @@
             <th {% if pagination.isSorted(['c.llevaTicket']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'lleva Ticket', 'c.llevaTicket') }}
             </th>
+            <th {% if pagination.isSorted(['c.efectivo']) %} class="sorted"{% endif %}>
+                {{ knp_pagination_sortable(pagination, 'Pago en Efectivo', 'c.efectivo') }}
+            </th>
             <th {% if pagination.isSorted(['c.date']) %} class="sorted"{% endif %}>
                 {{ knp_pagination_sortable(pagination, 'Fecha', ['c.fecha']) }}
             </th>
@@ -75,6 +86,13 @@
                 <td>{{ items.egreso }}</td>
                 <td>
                     {% if items.llevaTicket %}
+                        si
+                    {% else %}
+                        no
+                    {% endif %}
+                </td>
+                <td>
+                    {% if items.efectivo %}
                         si
                     {% else %}
                         no

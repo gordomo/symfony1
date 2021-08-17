@@ -46,6 +46,30 @@ class CajaRepository extends ServiceEntityRepository
         $query = $query->getQuery();
         return $query->getResult();
     }
+
+    public function getIngresosEfectivoTarjeta($desc = '', $desde = '', $hasta = '', $efectivo = true)
+    {
+        $query = $this->createQueryBuilder('c');
+        if ($efectivo) {
+            $query = $query->andWhere('c.efectivo = :efectivo')->setParameter('efectivo', '1');
+        } else {
+            $query = $query->andWhere('c.efectivo = :efectivo')->setParameter('efectivo', '0');
+        }
+        if ($desc != '') {
+            $query = $query->andWhere('c.descrip like  :descrip')->setParameter('descrip','%'. $desc .'%');
+        }
+        if($desde != '') {
+
+            $from = new \DateTime($desde->format("Y-m-d")." 00:00:00");
+            $to   = new \DateTime($hasta->format("Y-m-d")." 23:59:59");
+            $query = $query->andWhere('c.fecha BETWEEN  :from AND :to')
+                ->setParameter('from', $from )
+                ->setParameter('to', $to);
+        }
+        $query = $query->select('SUM(c.ingreso)');
+        $query = $query->getQuery();
+        return $query->getResult();
+    }
     public function findByDesc($value)
     {
         return $this->createQueryBuilder('c')
