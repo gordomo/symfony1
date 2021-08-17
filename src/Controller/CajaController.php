@@ -175,6 +175,7 @@ class CajaController extends AbstractController
             //->add('descrip', TextType::class, ['required' => false])
             ->add('egreso', NumberType::class, ['required' => false])
             ->add('llevaTicket', CheckboxType::class, ['label' => 'Lleva Ticket'])->setRequired(false)
+            ->add('efectivo', CheckboxType::class, ['label' => 'Pago en Efectivo'])->setRequired(false)
             ->add('fecha', DateType::class, ['widget' => 'single_text', 'disabled' => !$user->isAdmin()])
             ->add('hora', TextType::class, ["mapped"=>false, 'disabled' => !$user->isAdmin()])
             ->add('save', SubmitType::class, ['label' => 'Guardar'])
