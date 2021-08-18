@@ -73,7 +73,7 @@ class CajaController extends AbstractController
         }
 
 
-        $buscar = $request->query->get('buscar') ?? '';
+        $buscar = /*$request->query->get('buscar') ??*/ '';
         $desde = $request->query->get('desde') ?? date('d-m-Y 00:00:00');;
         $hasta = $request->query->get('hasta') ?? date('d-m-Y 23:59:59');;
 
